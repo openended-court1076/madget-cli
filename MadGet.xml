@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+    <info name="MadGet" 
+          version="1.0.2" 
+          package_name="com.mehmetalidsy.madget" 
+          license="MIT" 
+          categories="Utility,Package Manager">
+        
+        <description>Go tabanlı, hızlı ve XML yapılandırmalı paket yönetim aracı.</description>
+        
+        <author id="mehmetalidsy" />
+        
+        <readme>
+            MadGet, sisteminizdeki paketleri XML dosyaları üzerinden 
+            yönetmenizi sağlayan deneysel bir CLI aracıdır.
+        </readme>
+        
+        <homepage>https://github.com/mehmetalidsy/madget-cli</homepage>
+        
+        <permissions>
+            <permission>network_access</permission>
+            <permission>file_write</permission>
+            <permission>root_execute</permission>
+        </permissions>
+    </info>
+
+    <protocols>
+        <protocol schema="https" handler="MadGet-Web-Handler" />
+        <protocol schema="ftp" handler="MadGet-File-Handler" />
+    </protocols>
+
+    <files_handler>
+        <file_handler ext=".mgp" handler="MadGet-Installer" />
+        <file_handler ext=".zip" handler="Archive-Extractor" />
+    </files_handler>
+</application>
