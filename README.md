@@ -24,4 +24,4 @@ Katkıda bulunmak isterseniz:
 3. Çatalladığınız dallardan birinde pull request oluşturun.
 
 ## Lisans
-Bu proje MIT Lisansı altında veröffentlichtir - https://github.com/mehmetalidsy/madget-cli/blob/main/LICENSE dosyasını görün.
+Bu proje MIT Lisansı altında veröffentlichtir - https://github.com/mehmetalidsy/madget-cli/blob/master/LICENSE dosyasını görün.
