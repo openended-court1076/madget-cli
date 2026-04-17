@@ -11,3 +11,7 @@ profile.cov
 go.work
 go.work.sum
 .env
+dev.db
+storage/
+example/package.tgz
+vendor/

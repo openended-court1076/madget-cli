@@ -1,63 +1,14 @@
 package cmd
 
 import (
-	"encoding/xml"
 	"fmt"
 	"os"
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/mehmetalidsy/madget-cli/internal/manifest"
 	"github.com/spf13/cobra"
 )
-
-type Application struct {
-	XMLName      xml.Name     `xml:"application"`
-	Info         Info         `xml:"info"`
-	Protocols    Protocols    `xml:"protocols"`
-	FilesHandler FilesHandler `xml:"files_handler"`
-}
-
-type Info struct {
-	XMLName     xml.Name `xml:"info"`
-	Name        string   `xml:"name,attr"`
-	Version     string   `xml:"version,attr"`
-	PackageName string   `xml:"package_name,attr"`
-	License     string   `xml:"license,attr"`
-	Categories  string   `xml:"categories,attr"`
-
-	Description string   `xml:"description"`
-	Author      Author   `xml:"author"`
-	Readme      string   `xml:"readme"`
-	Homepage    string   `xml:"homepage"`
-	Permissions []string `xml:"permissions>permission"`
-}
-
-type Author struct {
-	XMLName xml.Name `xml:"author"`
-	ID      string   `xml:"id,attr"`
-}
-
-type Protocols struct {
-	XMLName  xml.Name   `xml:"protocols"`
-	Protocol []Protocol `xml:"protocol"`
-}
-
-type Protocol struct {
-	XMLName xml.Name `xml:"protocol"`
-	Scheme  string   `xml:"schema,attr"`
-	Handler string   `xml:"handler,attr"`
-}
-
-type FilesHandler struct {
-	XMLName     xml.Name      `xml:"files_handler"`
-	FileHandler []FileHandler `xml:"file_handler"`
-}
-
-type FileHandler struct {
-	XMLName xml.Name `xml:"file_handler"`
-	Ext     string   `xml:"ext,attr"`
-	Handler string   `xml:"handler,attr"`
-}
 
 var infoCmd = &cobra.Command{
 	Use:   "info [package]",
@@ -108,7 +59,7 @@ func errorMessage(text string, a ...any) {
 	fmt.Println()
 }
 
-func showProtocols(protocols Protocols, fgColor func(a ...interface{})) {
+func showProtocols(protocols manifest.Protocols, fgColor func(a ...interface{})) {
 	color.New(color.FgHiCyan).Println("------- PROTOCOLS -------")
 	for _, p := range protocols.Protocol {
 		fgColor("Schema: ", clean(p.Scheme), " - Handler: ", clean(p.Handler))
@@ -132,16 +83,17 @@ func readmeContentView(wdPath string) {
 	color.New(color.FgHiMagenta).Println("------- README -------")
 }
 
-func iniGet(path string) Application {
+func iniGet(path string) manifest.Application {
 	xmlFile, err := os.ReadFile(path)
 	if err != nil {
 		errorMessage("Error reading XML file: " + err.Error())
+		return manifest.Application{}
 	}
 
-	var appManifest Application
-	err = xml.Unmarshal(xmlFile, &appManifest)
+	appManifest, err := manifest.UnmarshalApplication(xmlFile)
 	if err != nil {
 		errorMessage("Error parsing XML file: " + err.Error())
+		return manifest.Application{}
 	}
 
 	return appManifest

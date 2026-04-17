@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+    <info name="ExamplePkg"
+          version="1.0.0"
+          package_name="example-pkg"
+          license="MIT"
+          categories="Example">
+        <description>Madget örnek paket; payload/ tarball ile yayınlanır.</description>
+        <author id="mehmetalidsy" />
+    </info>
+</application>

@@ -1,26 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"log"
 
-	"madget-cli/cmd"
-	"github.com/spf13/cobra"
+	climain "github.com/mehmetalidsy/madget-cli/apps/cli"
 )
 
 func main() {
-	fmt.Println()
-	root := cmd.GetRootCommand()
-	root.CompletionOptions.DisableDefaultCmd = true
-	root.SilenceErrors = true
-	root.SilenceUsage = true
-	root.SetHelpCommand(&cobra.Command{Hidden: true})
-	root.SetIn(os.Stdin)
-	root.SetOut(os.Stdout)
-	root.SetErr(os.Stderr)
-
-	if err := root.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	if err := climain.Run(); err != nil {
+		log.Fatal(err)
 	}
 }

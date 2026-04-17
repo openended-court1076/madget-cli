@@ -1,0 +1,59 @@
+openapi: 3.0.3
+info:
+  title: Madget Registry API
+  version: 0.1.0
+paths:
+  /healthz:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+  /v1/packages:
+    post:
+      summary: Publish package tarball
+      security:
+        - bearerAuth: []
+      responses:
+        "201":
+          description: Published
+  /v1/packages/{name}/versions:
+    get:
+      summary: List package versions
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Version list
+  /v1/packages/{name}/resolve:
+    get:
+      summary: Resolve highest version for range
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: range
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Resolved package version
+  /v1/tarballs/{name}/{version}:
+    get:
+      summary: Download tarball
+      responses:
+        "200":
+          description: Tarball
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
